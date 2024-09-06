@@ -42,13 +42,7 @@ Before you begin, make sure you have the following tools installed on your machi
 
 ### Strava API
 
-In order to use the Strava API you will need to first create an app on Strava.com using your peronsal Strava account. To do that please follow the Getting Started guide from Strava https://developers.strava.com/docs/getting-started/. Below is a screenshot of the API settings that you should use:
-
-<img width="669" alt="image" src="https://user-images.githubusercontent.com/5293650/199803451-77983e30-88bc-4eda-9ffc-792710e37200.png">
-
-Once your Strava App is created please open `App.tsx` and add your details for `STRAVA_CLIENT_ID` and `STRAVA_CLIENT_SECRET`
-
-Now you can press `Strava auth` button on the simulator and it will take you through the Strava auth flow. Please use the following user login details (we have created a test users that has some test activities for you. This will save you from having to generate activities):
+Press `Strava auth` button on the simulator and it will take you through the Strava auth flow. Please use the following user login details (we have created a test users that has some test activities for you. This will save you from having to generate activities - also feel free to user your own strava account!):
 
 ```
 email: "developer+strava@runna.com"

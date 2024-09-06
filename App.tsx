@@ -15,8 +15,8 @@ const STRAVA_CONFIG = {
   revocationEndpoint: "https://www.strava.com/oauth/deauthorize",
 };
 
-const STRAVA_CLIENT_ID = ""; // Add your client id here
-const STRAVA_CLIENT_SECRET = ""; // Add your client secret here;
+const STRAVA_CLIENT_ID = "3119"; // Add your client id here
+const STRAVA_CLIENT_SECRET = "ebe76760b27637e2f72da2b54f63894289e6dbcb"; // Add your client secret here;
 const STRAVA_REDIRECT_URI = makeRedirectUri({
   scheme: "myapp",
   preferLocalhost: true,
