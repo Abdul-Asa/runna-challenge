@@ -46,7 +46,7 @@ Press `Strava auth` button on the simulator and it will take you through the Str
 
 ```
 email: "developer+strava@runna.com"
-password: "nGE#rUlwK6mI3Z9*"
+password: "dyp2RZG1yby*afn4mbt"
 ```
 
 Your accessToken will be printed to the console (which can be seen in your terminal on tab where you started your expo project, i.e `npx expo start`). You will use this accessToken to call the Strava API
