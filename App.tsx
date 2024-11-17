@@ -1,5 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
+  SectionList,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import {
   exchangeCodeAsync,
@@ -7,7 +15,8 @@ import {
   useAuthRequest,
 } from "expo-auth-session";
 import StravaClient from "./utils/stravaClient";
-import { User } from "./types/strava";
+import { Activity, User } from "./types/strava";
+import ActivityCard from "./components/ActivityCard";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -28,7 +37,9 @@ const STRAVA_REDIRECT_URI = makeRedirectUri({
 const stravaClient = new StravaClient();
 
 const App = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>(null);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [loading, setLoading] = useState(false);
   const [request, response, promtAsync] = useAuthRequest(
     {
       clientId: STRAVA_CLIENT_ID,
@@ -40,45 +51,85 @@ const App = () => {
   );
 
   const onPressStravaAuth = useCallback(async () => {
-    await promtAsync();
-    if (response?.type === "success") {
-      const { code } = response.params;
-      const exchangeResponse = await exchangeCodeAsync(
-        {
-          clientId: STRAVA_CLIENT_ID,
-          code,
-          redirectUri: STRAVA_REDIRECT_URI,
-          extraParams: {
-            client_secret: STRAVA_CLIENT_SECRET,
+    setLoading(true);
+    if (request) {
+      const result = await promtAsync();
+      if (result?.type === "success") {
+        const { code } = result.params;
+        const exchangeResponse = await exchangeCodeAsync(
+          {
+            clientId: STRAVA_CLIENT_ID,
+            code,
+            redirectUri: STRAVA_REDIRECT_URI,
+            extraParams: {
+              client_secret: STRAVA_CLIENT_SECRET,
+            },
           },
-        },
-        { tokenEndpoint: STRAVA_CONFIG.tokenEndpoint }
-      );
-      stravaClient.accessToken = exchangeResponse.accessToken;
-      const user = await stravaClient.getUser();
-      setUser(user);
+          { tokenEndpoint: STRAVA_CONFIG.tokenEndpoint }
+        );
+        stravaClient.accessToken = exchangeResponse.accessToken;
+
+        const user = await stravaClient.getUser();
+        const activities = await stravaClient.getActivities();
+        setUser(user);
+        setActivities(activities);
+      }
     }
+    setLoading(false);
   }, [request, response, promtAsync]);
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={{ padding: 16, flex: 1 }}
-      contentContainerStyle={{ flex: 1 }}
-    >
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <TouchableOpacity
-          onPress={onPressStravaAuth}
-          style={{
-            backgroundColor: "#161616",
-            borderRadius: 4,
-            padding: 16,
-          }}
+    <View style={{ padding: 16, flex: 1 }}>
+      {user ? (
+        <SafeAreaView style={{ flex: 1, gap: 16, padding: 16 }}>
+          <Text
+            style={{
+              paddingTop: 40,
+              fontSize: 32,
+              fontWeight: "bold",
+            }}
+          >
+            Welcome {user.firstname}
+          </Text>
+          <SectionList
+            sections={[
+              {
+                title: "Activities",
+                data: activities,
+              },
+            ]}
+            renderItem={({ item }) => <ActivityCard activity={item} />}
+            renderSectionHeader={({ section }) => (
+              <View style={{ backgroundColor: "white", paddingVertical: 8 }}>
+                <Text style={{ fontSize: 24, fontWeight: "semibold" }}>
+                  {section.title}
+                </Text>
+              </View>
+            )}
+            contentContainerStyle={{ paddingBottom: 24 }}
+          />
+        </SafeAreaView>
+      ) : (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <Text style={{ color: "#FFF" }}>Strava Auth</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          {loading ? (
+            <ActivityIndicator size="small" />
+          ) : (
+            <TouchableOpacity
+              onPress={onPressStravaAuth}
+              style={{
+                backgroundColor: "#161616",
+                borderRadius: 4,
+                padding: 16,
+              }}
+            >
+              <Text style={{ color: "#FFF" }}>Strava Auth</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
+    </View>
   );
 };
 
