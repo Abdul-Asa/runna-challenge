@@ -16,6 +16,8 @@ import {
 import { stravaClient } from "./utils/stravaClient";
 import { Activity, User } from "./types/strava";
 import ActivityCard from "./components/ActivityCard";
+import { SheetProvider } from "react-native-actions-sheet";
+import "./components/Sheet";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -76,57 +78,59 @@ const App = () => {
   }, [request, response, promtAsync]);
 
   return (
-    <View style={{ padding: 16, flex: 1 }}>
-      {user ? (
-        <View style={{ flex: 1, gap: 16, padding: 16 }}>
-          <Text
-            style={{
-              paddingTop: 40,
-              fontSize: 32,
-              fontWeight: "bold",
-            }}
-          >
-            Welcome {user.firstname}
-          </Text>
-          <SectionList
-            sections={[
-              {
-                title: "Activities",
-                data: activities,
-              },
-            ]}
-            renderItem={({ item }) => <ActivityCard activity={item} />}
-            renderSectionHeader={({ section }) => (
-              <View style={{ backgroundColor: "white", paddingVertical: 8 }}>
-                <Text style={{ fontSize: 24, fontWeight: "semibold" }}>
-                  {section.title}:
-                </Text>
-              </View>
-            )}
-            contentContainerStyle={{ paddingBottom: 24 }}
-          />
-        </View>
-      ) : (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          {loading ? (
-            <ActivityIndicator size="small" />
-          ) : (
-            <TouchableOpacity
-              onPress={onPressStravaAuth}
+    <SheetProvider>
+      <View style={{ padding: 16, flex: 1 }}>
+        {user ? (
+          <View style={{ flex: 1, gap: 16, padding: 16 }}>
+            <Text
               style={{
-                backgroundColor: "#161616",
-                borderRadius: 4,
-                padding: 16,
+                paddingTop: 40,
+                fontSize: 32,
+                fontWeight: "bold",
               }}
             >
-              <Text style={{ color: "#FFF" }}>Strava Auth</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
-    </View>
+              Welcome {user.firstname}
+            </Text>
+            <SectionList
+              sections={[
+                {
+                  title: "Activities",
+                  data: activities,
+                },
+              ]}
+              renderItem={({ item }) => <ActivityCard activity={item} />}
+              renderSectionHeader={({ section }) => (
+                <View style={{ backgroundColor: "white", paddingVertical: 8 }}>
+                  <Text style={{ fontSize: 24, fontWeight: "semibold" }}>
+                    {section.title}:
+                  </Text>
+                </View>
+              )}
+              contentContainerStyle={{ paddingBottom: 24 }}
+            />
+          </View>
+        ) : (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" />
+            ) : (
+              <TouchableOpacity
+                onPress={onPressStravaAuth}
+                style={{
+                  backgroundColor: "#161616",
+                  borderRadius: 4,
+                  padding: 16,
+                }}
+              >
+                <Text style={{ color: "#FFF" }}>Strava Auth</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+      </View>
+    </SheetProvider>
   );
 };
 

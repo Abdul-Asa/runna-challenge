@@ -1,39 +1,16 @@
 import { useEffect, useState } from "react";
-import {
-  Animated,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  View,
-  ActivityIndicator,
-  SectionList,
-} from "react-native";
-import { Activity, ActivityStreams, LapData } from "../types/strava";
+import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+import { Activity, LapData } from "../types/strava";
 import { stravaClient } from "../utils/stravaClient";
+import { SheetManager } from "react-native-actions-sheet";
+
 interface ActivityCardProps {
   activity: Activity;
 }
 
 const ActivityCard = ({ activity }: ActivityCardProps) => {
-  const [expanded, setExpanded] = useState(false);
-  const [animation] = useState(new Animated.Value(0));
   const [loading, setLoading] = useState(false);
   const [lapData, setLapData] = useState<LapData[]>([]);
-  const [contentHeight, setContentHeight] = useState(100);
-
-  const toggleExpand = () => {
-    const toValue = expanded ? 0 : 1;
-    Animated.spring(animation, {
-      toValue,
-      useNativeDriver: false,
-    }).start();
-    setExpanded(!expanded);
-  };
-
-  const maxHeight = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [200, contentHeight],
-  });
 
   const fetchLapInfo = async () => {
     const activityData = await stravaClient.getActivity(activity.id);
@@ -73,6 +50,12 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
     setLapData(lapData);
   };
 
+  const openSheet = () => {
+    SheetManager.show("activity-sheet", {
+      payload: { activity, lapData, isLoading: loading },
+    });
+  };
+
   useEffect(() => {
     if (lapData.length === 0) {
       setLoading(true);
@@ -81,43 +64,22 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
   }, [activity]);
 
   return (
-    <TouchableOpacity onPress={toggleExpand} activeOpacity={0.7}>
-      <Animated.View
-        style={[styles.card, { maxHeight }]}
-        onLayout={({ nativeEvent }) => {
-          if (nativeEvent.layout.height > 100) {
-            setContentHeight(nativeEvent.layout.height);
-          }
-        }}
-      >
-        <Text style={styles.title}>{activity.name}</Text>
-
-        <View>
-          <Text style={styles.basicInfo}>
-            Distance: {(activity.distance / 1000).toFixed(2)} km
-          </Text>
-          <Text style={styles.basicInfo}>
-            Duration: {Math.floor(activity.elapsed_time / 60)} minutes
-          </Text>
-          <Text style={styles.basicInfo}>
-            Speed: {(activity.average_speed * 3.6).toFixed(2)} km/h
-          </Text>
-          <Text style={styles.basicInfo}>
-            Date: {new Date(activity.start_date).toLocaleDateString()}
-          </Text>
-        </View>
-
-        <Animated.View style={{ opacity: animation }}>
-          {loading && <ActivityIndicator size="large" color="#161616" />}
-          {!loading && lapData && (
-            <SectionList
-              sections={[{ title: "Laps", data: lapData }]}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => <Text>{item.name}</Text>}
-            />
-          )}
-        </Animated.View>
-      </Animated.View>
+    <TouchableOpacity style={styles.card} onPress={openSheet}>
+      <Text style={styles.title}>{activity.name}</Text>
+      <View>
+        <Text style={styles.basicInfo}>
+          Distance: {(activity.distance / 1000).toFixed(2)} km
+        </Text>
+        <Text style={styles.basicInfo}>
+          Duration: {Math.floor(activity.elapsed_time / 60)} minutes
+        </Text>
+        <Text style={styles.basicInfo}>
+          Speed: {(activity.average_speed * 3.6).toFixed(2)} km/h
+        </Text>
+        <Text style={styles.basicInfo}>
+          Date: {new Date(activity.start_date).toLocaleDateString()}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };
