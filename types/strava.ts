@@ -8,19 +8,29 @@ export interface User {
 export interface Activity {
   id: number;
   name: string;
-  type: string;
   distance: number;
-  moving_time: number;
   elapsed_time: number;
-  total_elevation_gain: number;
   start_date: string;
   average_speed: number;
-  max_speed: number;
-  average_heartrate?: number;
-  max_heartrate?: number;
-  average_cadence?: number;
-  description?: string | null;
-  calories?: number;
-  laps?: any[];
   [key: string]: unknown;
+}
+
+export interface ActivityStreams {
+  [key: string]: {
+    data: number[];
+    series_type: string;
+    original_size: number;
+    resolution: string;
+  };
+}
+
+export interface LapData {
+  id: number;
+  name: string;
+  maxCadence: number;
+  maxElevation: number;
+  minElevation: number;
+  maxHeartRate: number;
+  minHeartRate: number;
+  maxSpeed: number;
 }

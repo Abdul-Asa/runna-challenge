@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   SafeAreaView,
-  ScrollView,
   SectionList,
   Text,
   TouchableOpacity,
@@ -14,7 +13,7 @@ import {
   makeRedirectUri,
   useAuthRequest,
 } from "expo-auth-session";
-import StravaClient from "./utils/stravaClient";
+import { stravaClient } from "./utils/stravaClient";
 import { Activity, User } from "./types/strava";
 import ActivityCard from "./components/ActivityCard";
 
@@ -33,8 +32,6 @@ const STRAVA_REDIRECT_URI = makeRedirectUri({
   preferLocalhost: true,
   path: "oauth",
 });
-
-const stravaClient = new StravaClient();
 
 const App = () => {
   const [user, setUser] = useState<User>(null);
@@ -81,7 +78,7 @@ const App = () => {
   return (
     <View style={{ padding: 16, flex: 1 }}>
       {user ? (
-        <SafeAreaView style={{ flex: 1, gap: 16, padding: 16 }}>
+        <View style={{ flex: 1, gap: 16, padding: 16 }}>
           <Text
             style={{
               paddingTop: 40,
@@ -102,13 +99,13 @@ const App = () => {
             renderSectionHeader={({ section }) => (
               <View style={{ backgroundColor: "white", paddingVertical: 8 }}>
                 <Text style={{ fontSize: 24, fontWeight: "semibold" }}>
-                  {section.title}
+                  {section.title}:
                 </Text>
               </View>
             )}
             contentContainerStyle={{ paddingBottom: 24 }}
           />
-        </SafeAreaView>
+        </View>
       ) : (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
