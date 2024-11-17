@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import {
@@ -6,6 +6,8 @@ import {
   makeRedirectUri,
   useAuthRequest,
 } from "expo-auth-session";
+import StravaClient from "./utils/stravaClient";
+import { User } from "./types/strava";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -23,7 +25,10 @@ const STRAVA_REDIRECT_URI = makeRedirectUri({
   path: "oauth",
 });
 
+const stravaClient = new StravaClient();
+
 const App = () => {
+  const [user, setUser] = useState<User | null>(null);
   const [request, response, promtAsync] = useAuthRequest(
     {
       clientId: STRAVA_CLIENT_ID,
@@ -35,23 +40,23 @@ const App = () => {
   );
 
   const onPressStravaAuth = useCallback(async () => {
-    if (request) {
-      await promtAsync();
-      if (response?.type === "success") {
-        const { code } = response.params;
-        const exchangeResponse = await exchangeCodeAsync(
-          {
-            clientId: STRAVA_CLIENT_ID,
-            code,
-            redirectUri: STRAVA_REDIRECT_URI,
-            extraParams: {
-              client_secret: STRAVA_CLIENT_SECRET,
-            },
+    await promtAsync();
+    if (response?.type === "success") {
+      const { code } = response.params;
+      const exchangeResponse = await exchangeCodeAsync(
+        {
+          clientId: STRAVA_CLIENT_ID,
+          code,
+          redirectUri: STRAVA_REDIRECT_URI,
+          extraParams: {
+            client_secret: STRAVA_CLIENT_SECRET,
           },
-          { tokenEndpoint: STRAVA_CONFIG.tokenEndpoint }
-        );
-        console.log("token", exchangeResponse);
-      }
+        },
+        { tokenEndpoint: STRAVA_CONFIG.tokenEndpoint }
+      );
+      stravaClient.accessToken = exchangeResponse.accessToken;
+      const user = await stravaClient.getUser();
+      setUser(user);
     }
   }, [request, response, promtAsync]);
 
