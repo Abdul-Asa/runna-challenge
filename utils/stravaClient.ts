@@ -1,7 +1,9 @@
 import type { Activity, ActivityStreams, User } from "../types/strava";
 
+//Client for interacting with the Strava API
 class StravaClient {
   private _accessToken: string;
+
   constructor() {}
 
   set accessToken(v: string) {
@@ -9,7 +11,7 @@ class StravaClient {
   }
 
   async fetch<T>(url: string): Promise<T> {
-    console.log("fetching", url);
+    // console.log("fetching", url);
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${this._accessToken}` },
     });

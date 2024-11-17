@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
-  SafeAreaView,
+  StyleSheet,
   SectionList,
   Text,
   TouchableOpacity,
@@ -35,6 +35,8 @@ const STRAVA_REDIRECT_URI = makeRedirectUri({
   path: "oauth",
 });
 
+//Consider using expo-secure-store to store the access token & refresh token
+
 const App = () => {
   const [user, setUser] = useState<User>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -53,6 +55,7 @@ const App = () => {
     setLoading(true);
     if (request) {
       const result = await promtAsync();
+      // The template code used response?.type, which didn't work unless user signs in twice, so I changed it to result?.type
       if (result?.type === "success") {
         const { code } = result.params;
         const exchangeResponse = await exchangeCodeAsync(
@@ -66,6 +69,9 @@ const App = () => {
           },
           { tokenEndpoint: STRAVA_CONFIG.tokenEndpoint }
         );
+        console.log("token", exchangeResponse);
+
+        //Set the access token and fetch the user and activities
         stravaClient.accessToken = exchangeResponse.accessToken;
 
         const user = await stravaClient.getUser();
@@ -77,20 +83,18 @@ const App = () => {
     setLoading(false);
   }, [request, response, promtAsync]);
 
+  //Render strat:
+  //1. Check if user is logged in
+  //2. If user is logged in, fetch activities and render them
+  //3. If user is not logged in, render the login button (With loading state)
+
+  //Should implement error handling
   return (
     <SheetProvider>
-      <View style={{ padding: 16, flex: 1 }}>
+      <View style={styles.container}>
         {user ? (
-          <View style={{ flex: 1, gap: 16, padding: 16 }}>
-            <Text
-              style={{
-                paddingTop: 40,
-                fontSize: 32,
-                fontWeight: "bold",
-              }}
-            >
-              Welcome {user.firstname}
-            </Text>
+          <View style={styles.userContainer}>
+            <Text style={styles.welcomeText}>Welcome {user.firstname}</Text>
             <SectionList
               sections={[
                 {
@@ -100,31 +104,23 @@ const App = () => {
               ]}
               renderItem={({ item }) => <ActivityCard activity={item} />}
               renderSectionHeader={({ section }) => (
-                <View style={{ backgroundColor: "white", paddingVertical: 8 }}>
-                  <Text style={{ fontSize: 24, fontWeight: "semibold" }}>
-                    {section.title}:
-                  </Text>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>{section.title}:</Text>
                 </View>
               )}
-              contentContainerStyle={{ paddingBottom: 24 }}
+              contentContainerStyle={styles.listContainer}
             />
           </View>
         ) : (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
+          <View style={styles.authContainer}>
             {loading ? (
               <ActivityIndicator size="small" />
             ) : (
               <TouchableOpacity
                 onPress={onPressStravaAuth}
-                style={{
-                  backgroundColor: "#161616",
-                  borderRadius: 4,
-                  padding: 16,
-                }}
+                style={styles.authButton}
               >
-                <Text style={{ color: "#FFF" }}>Strava Auth</Text>
+                <Text style={styles.authButtonText}>Strava Auth</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -133,5 +129,46 @@ const App = () => {
     </SheetProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    flex: 1,
+  },
+  userContainer: {
+    flex: 1,
+    gap: 16,
+    padding: 16,
+  },
+  welcomeText: {
+    paddingTop: 40,
+    fontSize: 32,
+    fontWeight: "bold",
+  },
+  sectionHeader: {
+    backgroundColor: "white",
+    paddingVertical: 8,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: "semibold",
+  },
+  listContainer: {
+    paddingBottom: 24,
+  },
+  authContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  authButton: {
+    backgroundColor: "#161616",
+    borderRadius: 4,
+    padding: 16,
+  },
+  authButtonText: {
+    color: "#FFF",
+  },
+});
 
 export default App;

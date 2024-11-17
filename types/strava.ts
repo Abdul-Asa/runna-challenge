@@ -1,8 +1,12 @@
+//Tried to create types for Strava API responses
+//Quite incomplete, so I decided to use any for the rest of the properties
+//Swagger-typescript-api or something similar would be a good tool to generate the types based on the swagger.json or openapi.json
+
 export interface User {
   id: number;
   firstname: string;
   lastname: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface Activity {
@@ -12,7 +16,7 @@ export interface Activity {
   elapsed_time: number;
   start_date: string;
   average_speed: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface ActivityStreams {

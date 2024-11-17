@@ -1,12 +1,6 @@
-import ActionSheet, { SheetProps } from "react-native-actions-sheet";
+import ActionSheet, { SheetProps, FlatList } from "react-native-actions-sheet";
 import { LapData } from "../types/strava";
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-} from "react-native";
+import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import React from "react";
 
 function ActivityActionSheet({ payload }: SheetProps<"activity-sheet">) {
@@ -16,7 +10,7 @@ function ActivityActionSheet({ payload }: SheetProps<"activity-sheet">) {
     <View style={styles.lapCard}>
       <Text style={styles.lapTitle}>Lap {index + 1}</Text>
       <Text style={styles.lapInfo}>
-        Max Speed: {item.maxSpeed.toFixed(1)} km/h
+        Max Speed: {item.maxSpeed.toFixed(2)} km/h
       </Text>
       <Text style={styles.lapInfo}>
         Min Heart Rate: {item.minHeartRate} bpm
@@ -35,19 +29,38 @@ function ActivityActionSheet({ payload }: SheetProps<"activity-sheet">) {
   );
 
   return (
-    <ActionSheet containerStyle={styles.container}>
+    <ActionSheet containerStyle={styles.container} gestureEnabled>
       {isLoading ? (
         <ActivityIndicator size="large" />
       ) : (
-        <>
-          <Text style={styles.title}>{activity.name}</Text>
-          <FlatList
-            data={lapData}
-            renderItem={renderLapItem}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={styles.listContainer}
-          />
-        </>
+        <FlatList
+          ListHeaderComponent={() => (
+            <>
+              <Text style={styles.title}>{activity.name}</Text>
+              <Text style={styles.infoText}>Activity Info</Text>
+              <View style={styles.infoContainer}>
+                <Text style={styles.infoText}>
+                  {/* UI tip:Don't know what data to show? Just show the whole JSON, your users will love you for it /s 😃👍🏾 */}
+                  {JSON.stringify(
+                    {
+                      ...activity,
+                      //I dont want to show the map from the activity object
+                      //as it contains a summaryPolyline property that is a large string
+                      map: null,
+                    },
+                    null,
+                    2
+                  )}
+                </Text>
+              </View>
+              <Text style={styles.infoText}>Laps</Text>
+            </>
+          )}
+          data={lapData}
+          renderItem={renderLapItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.listContainer}
+        />
       )}
     </ActionSheet>
   );
@@ -55,7 +68,7 @@ function ActivityActionSheet({ payload }: SheetProps<"activity-sheet">) {
 
 const styles = StyleSheet.create({
   container: {
-    height: "60%",
+    height: "80%",
     padding: 16,
   },
   title: {
@@ -79,6 +92,17 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   lapInfo: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 4,
+  },
+  infoContainer: {
+    padding: 16,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  infoText: {
     fontSize: 14,
     color: "#666",
     marginBottom: 4,

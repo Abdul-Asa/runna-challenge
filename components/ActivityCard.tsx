@@ -13,11 +13,15 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
   const [lapData, setLapData] = useState<LapData[]>([]);
 
   const fetchLapInfo = async () => {
+    //Get more detailed activity data to get the laps and streams
     const activityData = await stravaClient.getActivity(activity.id);
     const laps = activityData.laps;
     const streams = await stravaClient.getActivityStreams(activity.id);
 
     const lapData = laps.map((lap) => {
+      //Based on the lap index, get the speed, heartrate, cadence and elevation data
+      //Embarrassingly, this was the part that took the most time to figure out
+      //It took me a while to figure out that the laps object has start_index and end_index properties
       const speedData = streams.velocity_smooth.data.slice(
         lap.start_index,
         lap.end_index + 1
@@ -35,10 +39,11 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
         lap.end_index + 1
       );
 
+      //The API returns some of these data directly, but we're deriving them ourselves from the streams (They match 👍🏾)
       return {
         id: lap.id,
         name: lap.name,
-        maxSpeed: Math.max(...speedData) * 3.6,
+        maxSpeed: speedData ? Math.max(...speedData) : 0,
         maxHeartRate: heartRateData ? Math.max(...heartRateData) : 0,
         minHeartRate: heartRateData ? Math.min(...heartRateData) : 0,
         maxCadence: cadenceData ? Math.max(...cadenceData) : 0,
@@ -56,6 +61,9 @@ const ActivityCard = ({ activity }: ActivityCardProps) => {
     });
   };
 
+  //Its fetching for every activity card rendered (a bad idea if there are many activities)
+  //I would change it to only fetch when the activity is pressed
+  //Or fetch when the activity card is in view, kinda like a pre-fetch for user experience
   useEffect(() => {
     if (lapData.length === 0) {
       setLoading(true);
