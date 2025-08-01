@@ -64,11 +64,15 @@ Before running the project, you need to set up your Strava API credentials:
    - Note down your `Client ID` and `Client Secret`
 
 2. **Configure Environment Variables**:
+
    - Copy `app.json.example` to `app.json`:
+
      ```bash
      cp app.json.example app.json
      ```
+
    - Edit `app.json` and replace the placeholder values:
+
      ```json
      "extra": {
        "stravaClientId": "YOUR_ACTUAL_CLIENT_ID",
@@ -90,6 +94,8 @@ Before running the project, you need to set up your Strava API credentials:
 ## Authentication
 
 The app uses Strava's OAuth 2.0 authentication flow. When you press the "Strava auth" button in the app, it will redirect you to Strava's authorization page. After successful authentication, you'll be redirected back to the app with the necessary access tokens.
+
+![Initial Authentication Screen](./assets/screenshot.png)
 
 You can use your own Strava account or the provided test account for demonstration purposes. The access token will be logged to the console for debugging purposes.
 
