@@ -2,6 +2,8 @@
 
 A React Native mobile application that integrates with the Strava API to display detailed activity information and analytics. This app provides users with comprehensive insights into their fitness activities including heart rate, elevation, cadence, and speed data.
 
+<div align="center"><img src="./assets/screenshot.png" alt="Initial Authentication Screen" width="300" /></div>
+
 ## Features
 
 - **Strava OAuth Authentication**: Secure login flow using Strava credentials
@@ -94,8 +96,6 @@ Before running the project, you need to set up your Strava API credentials:
 ## Authentication
 
 The app uses Strava's OAuth 2.0 authentication flow. When you press the "Strava auth" button in the app, it will redirect you to Strava's authorization page. After successful authentication, you'll be redirected back to the app with the necessary access tokens.
-
-<img src="./assets/screenshot.png" alt="Initial Authentication Screen" width="300" />
 
 You can use your own Strava account or the provided test account for demonstration purposes. The access token will be logged to the console for debugging purposes.
 
