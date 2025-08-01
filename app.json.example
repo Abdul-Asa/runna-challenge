@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "rb-strava-challenge-v3",
+    "slug": "rb-strava-challenge-v3",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "myapp",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "stravaClientId": "YOUR_STRAVA_CLIENT_ID_HERE",
+      "stravaClientSecret": "YOUR_STRAVA_CLIENT_SECRET_HERE"
+    }
+  }
+}

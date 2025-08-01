@@ -53,13 +53,39 @@ Before you begin, make sure you have the following tools installed on your machi
   - Android Studio: [Download here](https://developer.android.com/studio)
   - Set up an Android Virtual Device (AVD) in Android Studio for running the app on an emulator.
 
+## Strava API Setup
+
+Before running the project, you need to set up your Strava API credentials:
+
+1. **Create a Strava Application**:
+
+   - Go to [Strava Developers](https://developers.strava.com/)
+   - Create a new application
+   - Note down your `Client ID` and `Client Secret`
+
+2. **Configure Environment Variables**:
+   - Copy `app.json.example` to `app.json`:
+     ```bash
+     cp app.json.example app.json
+     ```
+   - Edit `app.json` and replace the placeholder values:
+     ```json
+     "extra": {
+       "stravaClientId": "YOUR_ACTUAL_CLIENT_ID",
+       "stravaClientSecret": "YOUR_ACTUAL_CLIENT_SECRET"
+     }
+     ```
+
+⚠️ **Security Note**: Never commit your actual `app.json` file with real credentials to version control. The file is already in `.gitignore` to prevent accidental commits.
+
 ## Running the project
 
 1. Open terminal at the project root
 2. Run `npm install`
-3. Run `npx expo start`
-4. Press `i` to open the iOS simulator
-5. OR, Press `a` to open the Anroid simulator
+3. Make sure you've configured your `app.json` file (see Strava API Setup above)
+4. Run `npx expo start`
+5. Press `i` to open the iOS simulator
+6. OR, Press `a` to open the Android simulator
 
 ## Authentication
 
