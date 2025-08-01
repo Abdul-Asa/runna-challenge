@@ -1,14 +1,33 @@
-# Runna Strava Challenge
+# Strava Activity Tracker
 
-## Challenge
+A React Native mobile application that integrates with the Strava API to display detailed activity information and analytics. This app provides users with comprehensive insights into their fitness activities including heart rate, elevation, cadence, and speed data.
 
-You are working for a early stage fitness startup. They want to experiment with the Strava API to see what type of information they can display in a React-Native mobile app. You have been brought in as a Full Stack engineer and your first task is to research the Strava API docs and integrate with a RN app. The tech lead has created a bare bones repo to help you get started and has also installed https://docs.expo.dev/versions/latest/sdk/auth-session/ which will handle to oAuth2.0 authetication flow with Strava.
+## Features
 
-They have also left intructions on how to get the project working on your local environment
+- **Strava OAuth Authentication**: Secure login flow using Strava credentials
+- **Activity Feed**: Browse and view a list of your recent Strava activities
+- **Detailed Activity Views**: Comprehensive activity information with metrics
+- **Activity Streams**: Real-time data visualization for:
+  - Heart rate monitoring
+  - Elevation tracking
+  - Cadence analysis
+  - Speed metrics
+- **Lap Analytics**: Detailed per-lap statistics including:
+  - Maximum and minimum heart rate
+  - Maximum and minimum elevation
+  - Maximum cadence and speed
+- **Enhanced UI**: Modal displays using react-native-actions-sheet for improved user experience
+- **Error Handling**: Robust error states and loading indicators throughout the app
+
+## Technical Stack
+
+- **React Native** with Expo SDK 52
+- **TypeScript** for type safety
+- **Strava REST API** integration
+- **OAuth 2.0** authentication flow
+- **react-native-actions-sheet** for modal displays
 
 ## Setup and Running Guide
-
-The following steps will help you get the project set up and running on your local machine.
 
 ## Prerequisites
 
@@ -16,9 +35,11 @@ Before you begin, make sure you have the following tools installed on your machi
 
 1. **Node.js** (LTS version recommended): [Download here](https://nodejs.org/)
 2. **Expo CLI**: Install globally via npm:
+
    ```bash
    npm install -g expo-cli
    ```
+
 3. **Git**: You will need Git to clone the repository: [Download here](https://git-scm.com/)
 
 ### Additional Tools (Platform-Specific)
@@ -40,39 +61,42 @@ Before you begin, make sure you have the following tools installed on your machi
 4. Press `i` to open the iOS simulator
 5. OR, Press `a` to open the Anroid simulator
 
-### Strava API
+## Authentication
 
-Press `Strava auth` button on the simulator and it will take you through the Strava auth flow. Please use the following user login details (we have created a test users that has some test activities for you. This will save you from having to generate activities - also feel free to user your own strava account!):
+The app uses Strava's OAuth 2.0 authentication flow. When you press the "Strava auth" button in the app, it will redirect you to Strava's authorization page. After successful authentication, you'll be redirected back to the app with the necessary access tokens.
 
-```
-email: "developer+strava@runna.com"
-password: "dyp2RZG1yby*afn4mbt"
-```
+You can use your own Strava account or the provided test account for demonstration purposes. The access token will be logged to the console for debugging purposes.
 
-Your accessToken will be printed to the console (which can be seen in your terminal on tab where you started your expo project, i.e `npx expo start`). You will use this accessToken to call the Strava API
+## Architecture & Implementation
 
-<img height="400" alt="image" src="https://user-images.githubusercontent.com/5293650/199756290-3ca777b8-bc24-4088-a3c7-6d0bf3c2e254.png">
+### API Integration
 
-## Tasks
+- Built with native fetch API for all Strava API communications
+- Implements proper error handling and loading states
+- Fetches activity lists, detailed activity data, and activity streams
+- Processes complex activity stream data for visualization
 
-1. Fetch a list of activities using the Strava API and display on the homescreen of the app (you can decide what summary information you want to display i.e. distance, time)
-2. Allow a user to click on an activity in the list and display more information about the activity.
-3. Use the Activity Streams API to fetch the `heartRate, elevation(altitude), cadence, speed(velocity_smooth)` for an activity (HINT: the query parameters will be something like `?keys=heartrate,altitude,velocity_smooth&key_by_type=true`)
-4. Using the `laps` array from an activity we want to compute the following data points for each lap:
-   - maxCadence
-   - maxElevation
-   - minElevation
-   - maxHeartRate
-   - minHeartRate
-   - maxSpeed
-5. Display a list of laps with above data points for each activity
+### Data Processing
 
-## Keep in mind
+- Real-time computation of lap analytics from activity data
+- Efficient handling of large datasets from activity streams
+- Smart caching strategies to minimize API calls
 
-- Use the native fetch API (https://reactnative.dev/docs/network) to make the Strava API requests, there is no need to install another library to do this
-- Please dont spend more than 3 hours on this challenge
-- There are no designs to work to. We're more concerned with functionality at this stage. You will have to make some UI / layout choices.
-- If you have questions feel free to ask them.
-- There is no need to push your changes up to the remote branch, the first part of the technical interview will be a code review of your changes on your local machine
+### UI/UX Design
 
-Have fun. We look forward to seeing your work!
+- Clean, intuitive interface focused on data readability
+- Responsive design that works across different device sizes
+- Native feel with proper loading states and error handling
+- Modal-based detailed views for better navigation flow
+
+## Future Enhancements
+
+- **Data Visualization**: More sophisticated charts and graphs for metrics
+- **Offline Support**: Cache previously loaded activities for offline viewing
+- **Performance Optimization**: Enhanced caching layer to reduce API calls
+- **Additional Metrics**: Integration with more Strava data points
+- **Social Features**: Activity sharing and comparison tools
+
+## Contributing
+
+This project demonstrates integration with the Strava API ecosystem and showcases React Native development patterns for data-heavy mobile applications.
