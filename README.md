@@ -95,7 +95,7 @@ Before running the project, you need to set up your Strava API credentials:
 
 The app uses Strava's OAuth 2.0 authentication flow. When you press the "Strava auth" button in the app, it will redirect you to Strava's authorization page. After successful authentication, you'll be redirected back to the app with the necessary access tokens.
 
-![Initial Authentication Screen](./assets/screenshot.png)
+<img src="./assets/screenshot.png" alt="Initial Authentication Screen" width="300" />
 
 You can use your own Strava account or the provided test account for demonstration purposes. The access token will be logged to the console for debugging purposes.
 
